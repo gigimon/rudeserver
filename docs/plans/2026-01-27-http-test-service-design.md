@@ -174,6 +174,7 @@ This ensures different clients and different methods do not interfere.
 ### Query parsing
 - `rl`: parse as float > 0
 - `burst`: parse as int > 0
+- `burst` without `rl` → `400 Bad Request`
 - `delay`: parse with `time.ParseDuration`
 - `h`: split on first `:` into header name/value; trim spaces
 - Any invalid query value → `400 Bad Request`
