@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"rudeserver/internal/httpserver"
 	"rudeserver/internal/openapi"
+	"rudeserver/internal/ratelimit"
 )
 
 func main() {
@@ -15,10 +17,7 @@ func main() {
 		log.Fatalf("openapi setup error: %v", err)
 	}
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("rudeserver"))
-	})
+	mux.Handle("/", httpserver.NewRouter(ratelimit.NewStore()))
 
 	srv := &http.Server{
 		Addr:              ":8080",
