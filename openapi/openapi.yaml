@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: RudeServer HTTP Test Service
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /http/status/{code}:
+    get:
+      summary: HTTP adapter
+      description: Accepts any HTTP method; GET/POST are shown as examples.
+      parameters:
+        - $ref: '#/components/parameters/Code'
+        - $ref: '#/components/parameters/Rl'
+        - $ref: '#/components/parameters/Burst'
+        - $ref: '#/components/parameters/Delay'
+        - $ref: '#/components/parameters/Body'
+        - $ref: '#/components/parameters/Header'
+      responses:
+        default:
+          description: Controlled HTTP response
+    post:
+      summary: HTTP adapter (POST example)
+      description: Accepts any HTTP method; GET/POST are shown as examples.
+      parameters:
+        - $ref: '#/components/parameters/Code'
+        - $ref: '#/components/parameters/Rl'
+        - $ref: '#/components/parameters/Burst'
+        - $ref: '#/components/parameters/Delay'
+        - $ref: '#/components/parameters/Body'
+        - $ref: '#/components/parameters/Header'
+      responses:
+        default:
+          description: Controlled HTTP response
+  /rest/status/{code}:
+    get:
+      summary: REST adapter
+      description: Accepts any HTTP method; GET/POST are shown as examples.
+      parameters:
+        - $ref: '#/components/parameters/Code'
+        - $ref: '#/components/parameters/Rl'
+        - $ref: '#/components/parameters/Burst'
+        - $ref: '#/components/parameters/Delay'
+        - $ref: '#/components/parameters/Body'
+        - $ref: '#/components/parameters/Header'
+      responses:
+        default:
+          description: Controlled HTTP response
+    post:
+      summary: REST adapter (POST example)
+      description: Accepts any HTTP method; GET/POST are shown as examples.
+      parameters:
+        - $ref: '#/components/parameters/Code'
+        - $ref: '#/components/parameters/Rl'
+        - $ref: '#/components/parameters/Burst'
+        - $ref: '#/components/parameters/Delay'
+        - $ref: '#/components/parameters/Body'
+        - $ref: '#/components/parameters/Header'
+      responses:
+        default:
+          description: Controlled HTTP response
+  /jsonrpc/status/{code}:
+    post:
+      summary: JSON-RPC adapter
+      parameters:
+        - $ref: '#/components/parameters/Code'
+        - $ref: '#/components/parameters/Rl'
+        - $ref: '#/components/parameters/Burst'
+        - $ref: '#/components/parameters/Delay'
+        - $ref: '#/components/parameters/Body'
+        - $ref: '#/components/parameters/Header'
+      responses:
+        default:
+          description: JSON-RPC response
+components:
+  parameters:
+    Code:
+      name: code
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 100
+        maximum: 599
+    Rl:
+      name: rl
+      in: query
+      description: Rate limit in requests per second.
+      schema:
+        type: number
+        format: float
+        minimum: 0
+    Burst:
+      name: burst
+      in: query
+      description: Burst size for the rate limiter.
+      schema:
+        type: integer
+        minimum: 1
+    Delay:
+      name: delay
+      in: query
+      description: Response delay (Go duration string, e.g. 200ms, 1s).
+      schema:
+        type: string
+    Body:
+      name: body
+      in: query
+      description: Response body (string).
+      schema:
+        type: string
+    Header:
+      name: h
+      in: query
+      description: Response header, repeatable, format \"Name:Value\".
+      schema:
+        type: string

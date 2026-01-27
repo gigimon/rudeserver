@@ -4,10 +4,17 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"rudeserver/internal/openapi"
 )
 
 func main() {
 	mux := http.NewServeMux()
+
+	if err := openapi.Register(mux); err != nil {
+		log.Fatalf("openapi setup error: %v", err)
+	}
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("rudeserver"))
@@ -24,4 +31,3 @@ func main() {
 		log.Fatalf("server error: %v", err)
 	}
 }
-
