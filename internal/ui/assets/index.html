@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RudeServer Inspector</title>
+    <link rel="stylesheet" href="/ui/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div>
+            <h1>RudeServer Inspector</h1>
+            <p>Last 100 requests · live polling</p>
+          </div>
+        </div>
+        <div class="stats" id="stats">
+          <div class="stat"><span>0</span><label>Total</label></div>
+          <div class="stat"><span>0</span><label>Errors</label></div>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel list-panel">
+          <div class="filters">
+            <input id="search" type="search" placeholder="Search path or method" />
+            <select id="method">
+              <option value="">All methods</option>
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>PATCH</option>
+              <option>DELETE</option>
+            </select>
+            <select id="status">
+              <option value="">All status</option>
+              <option value="2xx">2xx</option>
+              <option value="4xx">4xx</option>
+              <option value="5xx">5xx</option>
+            </select>
+            <label class="toggle">
+              <input id="jsonOnly" type="checkbox" />
+              <span>JSON only</span>
+            </label>
+          </div>
+
+          <ul id="requestList" class="request-list"></ul>
+        </section>
+
+        <section class="panel detail-panel">
+          <div class="detail-header">
+            <div>
+              <h2 id="detailTitle">Select a request</h2>
+              <p id="detailSubtitle">Click on a row to inspect request and response data.</p>
+            </div>
+            <div class="pill" id="detailStatus">—</div>
+          </div>
+
+          <div class="tabs" id="tabs">
+            <button class="tab active" data-tab="overview">Overview</button>
+            <button class="tab" data-tab="request">Request</button>
+            <button class="tab" data-tab="response">Response</button>
+            <button class="tab" data-tab="raw">Raw</button>
+          </div>
+
+          <div class="tab-content" id="tab-overview"></div>
+          <div class="tab-content hidden" id="tab-request"></div>
+          <div class="tab-content hidden" id="tab-response"></div>
+          <div class="tab-content hidden" id="tab-raw"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/ui/app.js"></script>
+  </body>
+</html>

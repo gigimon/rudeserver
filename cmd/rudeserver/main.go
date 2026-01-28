@@ -8,6 +8,8 @@ import (
 	"rudeserver/internal/httpserver"
 	"rudeserver/internal/openapi"
 	"rudeserver/internal/ratelimit"
+	"rudeserver/internal/reqlog"
+	"rudeserver/internal/ui"
 )
 
 func main() {
@@ -17,7 +19,20 @@ func main() {
 		log.Fatalf("openapi setup error: %v", err)
 	}
 
-	mux.Handle("/", httpserver.NewRouter(ratelimit.NewStore()))
+	uiHandler, err := ui.Handler()
+	if err != nil {
+		log.Fatalf("ui setup error: %v", err)
+	}
+	mux.Handle("/", uiHandler)
+
+	logStore := reqlog.NewStore(100)
+	apiHandler := httpserver.NewRouter(ratelimit.NewStore())
+	loggedAPI := reqlog.Middleware(logStore, apiHandler)
+
+	mux.Handle("/ui/api/", ui.APIHandler(logStore))
+	mux.Handle("/http/", loggedAPI)
+	mux.Handle("/rest/", loggedAPI)
+	mux.Handle("/jsonrpc/", loggedAPI)
 
 	srv := &http.Server{
 		Addr:              ":8080",
