@@ -25,14 +25,22 @@ func TestAPIListAndDetail(t *testing.T) {
 	if listRec.Code != http.StatusOK {
 		t.Fatalf("list status = %d", listRec.Code)
 	}
-	var list []map[string]any
-	if err := json.Unmarshal(listRec.Body.Bytes(), &list); err != nil {
+	var listResp map[string]any
+	if err := json.Unmarshal(listRec.Body.Bytes(), &listResp); err != nil {
 		t.Fatalf("list json: %v", err)
 	}
-	if len(list) != 2 {
-		t.Fatalf("list len = %d", len(list))
+	if listResp["total"].(float64) != 2 {
+		t.Fatalf("total = %v", listResp["total"])
 	}
-	idAny := list[0]["id"]
+	items, ok := listResp["items"].([]any)
+	if !ok {
+		t.Fatalf("items type = %T", listResp["items"])
+	}
+	if len(items) != 2 {
+		t.Fatalf("list len = %d", len(items))
+	}
+	item0 := items[0].(map[string]any)
+	idAny := item0["id"]
 	idFloat, ok := idAny.(float64)
 	if !ok {
 		t.Fatalf("id type = %T", idAny)

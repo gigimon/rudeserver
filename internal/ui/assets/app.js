@@ -14,6 +14,7 @@ const filters = {
 
 let currentId = null;
 let currentList = [];
+let sessionTotal = 0;
 
 function statusBadge(status) {
   if (status >= 500) return 'bad';
@@ -66,8 +67,9 @@ function renderList() {
 
   const errors = currentList.filter(x => x.status >= 400).length;
   statsEl.innerHTML = `
-    <div class="stat"><span>${currentList.length}</span><label>Total</label></div>
+    <div class="stat"><span>${currentList.length}</span><label>Visible</label></div>
     <div class="stat"><span>${errors}</span><label>Errors</label></div>
+    <div class="stat"><span>${sessionTotal}</span><label>Session Total</label></div>
   `;
 }
 
@@ -89,7 +91,9 @@ tabs.addEventListener('click', e => {
 async function loadList() {
   const res = await fetch('/ui/api/requests');
   if (!res.ok) return;
-  currentList = await res.json();
+  const payload = await res.json();
+  sessionTotal = payload.total || 0;
+  currentList = payload.items || [];
   renderList();
 
   if (currentId && !currentList.find(x => x.id === currentId)) {

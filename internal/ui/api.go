@@ -14,7 +14,10 @@ func APIHandler(store *reqlog.Store) http.Handler {
 		path := strings.TrimPrefix(r.URL.Path, "/ui/api")
 		switch {
 		case path == "/requests":
-			writeJSON(w, toSummaries(store.List()))
+			writeJSON(w, map[string]any{
+				"total": store.Total(),
+				"items": toSummaries(store.List()),
+			})
 			return
 		case strings.HasPrefix(path, "/requests/"):
 			idStr := strings.TrimPrefix(path, "/requests/")

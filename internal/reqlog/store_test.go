@@ -37,3 +37,13 @@ func TestStoreFindByID(t *testing.T) {
 		t.Fatal("expected id=1")
 	}
 }
+
+func TestStoreTotalCount(t *testing.T) {
+	store := NewStore(2)
+	store.Add(Entry{})
+	store.Add(Entry{})
+	store.Add(Entry{})
+	if store.Total() != 3 {
+		t.Fatalf("total = %d", store.Total())
+	}
+}

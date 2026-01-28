@@ -40,6 +40,7 @@ type Store struct {
 	entries []Entry
 	nextID  int64
 	max     int
+	total   int64
 }
 
 func NewStore(max int) *Store {
@@ -59,6 +60,7 @@ func (s *Store) Add(entry Entry) Entry {
 
 	entry.ID = s.nextID
 	s.nextID++
+	s.total++
 	if entry.Timestamp.IsZero() {
 		entry.Timestamp = time.Now().UTC()
 	}
@@ -89,4 +91,10 @@ func (s *Store) Find(id int64) (Entry, bool) {
 		}
 	}
 	return Entry{}, false
+}
+
+func (s *Store) Total() int64 {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.total
 }
