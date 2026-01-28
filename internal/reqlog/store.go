@@ -32,6 +32,7 @@ type Entry struct {
 	ResBodyB64   string
 	ReqError     string
 	ResError     string
+	UserAgent    string
 }
 
 type Store struct {
