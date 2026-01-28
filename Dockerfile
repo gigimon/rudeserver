@@ -14,9 +14,13 @@ FROM alpine:3.20
 
 RUN apk add --no-cache ca-certificates
 
-COPY --from=build /out/rudeserver /rudeserver
+WORKDIR /app
+
+COPY --from=build /out/rudeserver /app/rudeserver
+COPY openapi /app/openapi
+
+ENV OPENAPI_SPEC_PATH=/app/openapi/openapi.yaml
 
 EXPOSE 8080
 
-ENTRYPOINT ["/rudeserver"]
-
+ENTRYPOINT ["/app/rudeserver"]

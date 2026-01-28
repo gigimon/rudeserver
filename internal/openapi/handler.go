@@ -11,6 +11,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const envSpecPath = "OPENAPI_SPEC_PATH"
+
 // Register loads the spec-first OpenAPI artifact and serves it as YAML and JSON.
 func Register(mux *http.ServeMux) error {
 	specPath, err := resolveSpecPath()
@@ -49,6 +51,26 @@ func Register(mux *http.ServeMux) error {
 }
 
 func resolveSpecPath() (string, error) {
+	if env := os.Getenv(envSpecPath); env != "" {
+		if fileExists(env) {
+			return env, nil
+		}
+	}
+
+	if cwd, err := os.Getwd(); err == nil {
+		candidate := filepath.Join(cwd, "openapi", "openapi.yaml")
+		if fileExists(candidate) {
+			return candidate, nil
+		}
+	}
+
+	if exe, err := os.Executable(); err == nil {
+		candidate := filepath.Join(filepath.Dir(exe), "openapi", "openapi.yaml")
+		if fileExists(candidate) {
+			return candidate, nil
+		}
+	}
+
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		return "", fmt.Errorf("runtime.Caller failed")
@@ -68,4 +90,12 @@ func resolveSpecPath() (string, error) {
 		}
 		dir = parent
 	}
+}
+
+func fileExists(path string) bool {
+	info, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return !info.IsDir()
 }
